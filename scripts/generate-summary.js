@@ -19,7 +19,7 @@ function generateSummary() {
             summary += fs.readFileSync('crypto.txt', 'utf8') + '\n\n';
         }
         
-        if (fs.existsSync('news.txt')) {
+        if (fs.existsSync('op3-news.txt')) {
             summary += fs.readFileSync('news.txt', 'utf8') + '\n';
         }
     } catch (error) {
