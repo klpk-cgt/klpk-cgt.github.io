@@ -1,0 +1,12 @@
+{
+  "name": "gold-price-tracker",
+  "version": "1.0.0",
+  "description": "自动获取并更新黄金价格",
+  "main": "update-price.js",
+  "scripts": {
+    "update": "node update-price.js"
+  },
+  "dependencies": {
+    "axios": "^1.4.0"
+  }
+}
