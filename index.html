@@ -3,68 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>每日黄金价格</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>今日金价</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+        
+        .price-container {
+            text-align: center;
+            background: white;
+            padding: 40px 60px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+            max-width: 90%;
+        }
+        
+        .date {
+            font-size: 24px;
+            color: #666;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .price {
+            font-size: 48px;
+            color: #D4AF37;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .unit {
+            font-size: 24px;
+            color: #888;
+            margin-left: 5px;
+        }
+        
+        .loading {
+            font-size: 20px;
+            color: #999;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-size: 20px;
+        }
+        
+        .refresh-btn {
+            margin-top: 20px;
+            padding: 8px 16px;
+            background: #D4AF37;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        .refresh-btn:hover {
+            background: #B8860B;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            .price-container {
+                padding: 30px 40px;
+            }
+            
+            .date {
+                font-size: 20px;
+            }
+            
+            .price {
+                font-size: 36px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🏅 每日黄金价格追踪</h1>
-            <p id="current-date">加载中...</p>
-        </header>
-        
-        <main>
-            <div class="price-card">
-                <div class="price-header">
-                    <h2>实时金价</h2>
-                    <button id="refresh-btn" class="refresh-btn">🔄 刷新</button>
-                </div>
-                
-                <div class="price-display">
-                    <div class="price-item">
-                        <span class="currency-flag">🇨🇳</span>
-                        <div class="price-info">
-                            <span class="label">人民币/克（买入）</span>
-                            <span class="price" id="price-buy">--</span>
-                        </div>
-                    </div>
-                    
-                    <div class="price-item">
-                        <span class="currency-flag">🇨🇳</span>
-                        <div class="price-info">
-                            <span class="label">人民币/克（卖出）</span>
-                            <span class="price" id="price-sell">--</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="change-info">
-                    <span class="label">今日波动：</span>
-                    <span id="low-price">最低价: --</span>
-                    <span id="high-price">最高价: --</span>
-                </div>
-                
-                <div class="update-time">
-                    最后更新: <span id="last-update">--</span>
-                </div>
-            </div>
-            
-            <div class="info-section">
-                <h3>📈 其他贵金属价格</h3>
-                <div id="other-metals">
-                    <!-- 其他金属价格将通过JS动态填充 -->
-                </div>
-            </div>
-        </main>
-        
-        <footer>
-            <p>数据仅供参考，实际价格以交易所为准</p>
-        </footer>
+    <div class="price-container">
+        <div class="date" id="current-date">正在获取日期...</div>
+        <div class="price" id="gold-price">
+            <span class="loading" id="loading-text">正在获取金价...</span>
+            <span id="price-value"></span>
+            <span class="unit" id="price-unit">元/克</span>
+        </div>
+        <button class="refresh-btn" id="refresh-btn" style="display:none;">刷新</button>
+        <div class="error" id="error-message" style="display:none;"></div>
     </div>
-    
-    <script src="script.js"></script>
-</body>
-</html>
+
+    <script>
+        // API配置
+        const API_URL = "https://v3.alapi.cn/api/gold";
+        // 请替换为您的实际API token
+        const TOKEN = "您的token";
+        
+        // 页面元素
+        const elements = {
+            currentDate: document.getElementById('current-date'),
+            priceValue: document.getElementById('price-value'),
+            priceUnit: document.getElementById('price-unit'),
+            loadingText: document.getElementById('loading-text'),
+            refreshBtn: document.getElementById('refresh-btn'),
+            errorMessage: document.getElementById('error-message')
+        };
+        
+        // 模拟数据 - 用于测试
+        const mockData = {
+            "request_id": "845959228099506176",
+            "success": true,
+            "message": "success",
+            "code": 200,
+            "data": [
+                {
+                    "symbol": "Au",
+                    "name": "黄金",
+                    "buy_price": 913.01,
+                    "sell_price": 918.01,
+                    "high_price": 918.01,
+                    "low_price": 913.01
+                }
+            ],
+            "time": 1762652397
+        };
+        
+        // 初始化页面
+        function init() {
+            // 设置当前日期
+            updateCurrentDate();
+            
+            // 尝试获取真实数据
+            fetchRealPrice().then(success => {
+                if (!success) {
+                    // 如果真实数据获取失败，使用模拟数据
+                    useMockData();
+                }
+            });
+            
+            // 绑定刷新按钮事件
+            elements.refreshBtn.addEventListener('click', () => {
+                fetchRealPrice();
+            });
+        }
+        
+        // 更新当前日期显示
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                weekday: 'long'
+            };
+            elements.currentDate.textContent = now.toLocaleDateString('zh-CN', options);
+        }
+        
+        // 获取真实价格
+        async function fetchRealPrice() {
+            try {
+                // 显示加载状态
+                showLoading();
+                
+                // 调用API
+                const response = await fetch(`${API_URL}?token=${TOKEN}`);
+                const data = await response.json();
+                
+                if (data && data.success) {
+                    updatePriceDisplay(data);
+                    return true;
+                } else {
+                    throw new Error(data.message || 'API返回数据异常');
+                }
+            } catch (error) {
+                console.error('获取真实价格失败:', error);
+                return false;
+            }
+        }
+        
+        // 使用模拟数据
+        function useMockData() {
+            updatePriceDisplay(mockData);
+            elements.errorMessage.textContent = "使用模拟数据展示，请配置有效API token获取真实数据";
+            elements.errorMessage.style.display = "block";
+        }
+        
+        // 更新价格显示
+        function updatePriceDisplay(apiData) {
+            // 隐藏加载状态
+            hideLoading();
+            
+            // 显示刷新按钮
+            elements.refreshBtn.style.display = "inline-block";
+            
+            // 查找黄金数据
+            const goldData = apiData.data.find(item => item.symbol === 'Au');
+            
+            if (goldData) {
+                // 显示价格
+                elements.priceValue.textContent = goldData.buy_price.toFixed(2);
+                elements.loadingText.style.display = "none";
+                
+                // 更新最后更新时间
+                const updateTime = new Date(apiData.time * 1000);
+                const timeStr = updateTime.toLocaleTimeString('zh-CN', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                elements.currentDate.textContent += ` (${timeStr}更新)`;
+            } else {
+                // 如果没有找到黄金数据
+                elements.errorMessage.textContent = "未找到黄金价格数据";
+                elements.errorMessage.style.display = "block";
+            }
+        }
+        
+        // 显示加载状态
+        function showLoading() {
+            elements.loadingText.style.display = "inline";
+            elements.priceValue.textContent = "";
+            elements.errorMessage.style.display = "none";
+        }
+        
+        // 隐藏加载状态
+        function hideLoading() {
+            elements.loadingText
