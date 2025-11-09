@@ -20,7 +20,7 @@ function generateSummary() {
         }
         
         if (fs.existsSync('op3-news.txt')) {
-            summary += fs.readFileSync('news.txt', 'utf8') + '\n';
+            summary += fs.readFileSync('top3-news.txt', 'utf8') + '\n';
         }
     } catch (error) {
         console.error('生成汇总文件时出错:', error);
