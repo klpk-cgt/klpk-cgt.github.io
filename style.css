@@ -1,0 +1,219 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    color: #333;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+header {
+    background: linear-gradient(45deg, #FFD700, #D4AF37);
+    color: #7a5c0c;
+    padding: 30px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+#current-date {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+main {
+    padding: 30px;
+}
+
+.price-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.price-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.price-header h2 {
+    color: #B8860B;
+    font-size: 1.5rem;
+}
+
+.refresh-btn {
+    background: #f0f0f0;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.refresh-btn:hover {
+    background: #e0e0e0;
+    transform: scale(1.05);
+}
+
+.price-display {
+    display: flex;
+    justify-content: space-around;
+    margin: 25px 0;
+}
+
+.price-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.currency-flag {
+    font-size: 2.5rem;
+}
+
+.price-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #B8860B;
+}
+
+.change-info {
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    border-radius: 10px;
+    background: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    font-size: 0.9rem;
+}
+
+#low-price, #high-price {
+    font-weight: 600;
+}
+
+.update-time {
+    text-align: center;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.info-section {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.info-section h3 {
+    color: #B8860B;
+    margin-bottom: 15px;
+}
+
+#other-metals {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.metal-item {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.metal-name {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.metal-price {
+    color: #B8860B;
+    font-weight: 500;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+    font-size: 0.9rem;
+    border-top: 1px solid #eee;
+}
+
+/* 响应式设计 */
+@media (max-width: 600px) {
+    .price-display {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .price-item {
+        justify-content: center;
+    }
+    
+    header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .price {
+        font-size: 1.6rem;
+    }
+
+    .change-info {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+/* 加载动画 */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.pulse {
+    animation: pulse 1.5s infinite;
+}
