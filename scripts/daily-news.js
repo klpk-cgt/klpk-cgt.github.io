@@ -45,7 +45,7 @@ class NewsAPI {
     }
 
     formatNews(newsArray) {
-        let formatted = `📰 今日新闻头条 (前3条)\n\n`;
+        let formatted = `📰 今日新闻头条\n\n`;
         formatted += `更新时间: ${new Date().toLocaleString('zh-CN')}\n\n`;
 
         newsArray.forEach((news, index) => {
