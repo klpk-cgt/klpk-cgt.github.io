@@ -1,12 +1,13 @@
 {
-  "name": "gold-price-tracker",
+  "name": "daily-info-tracker",
   "version": "1.0.0",
-  "description": "自动获取并更新黄金价格",
-  "main": "update-price.js",
+  "description": "自动获取每日信息（金价、虚拟货币、新闻等）",
+  "main": "index.js",
   "scripts": {
-    "update": "node update-price.js"
+    "update": "node scripts/generate-summary.js"
   },
   "dependencies": {
-    "axios": "^1.4.0"
+    "axios": "^1.4.0",
+    "cheerio": "^1.0.0-rc.12"
   }
 }
