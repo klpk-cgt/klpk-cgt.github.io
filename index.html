@@ -7,8 +7,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
+            margin: 20px;
+            padding: 0;
             background-color: white;
         }
         
@@ -27,10 +27,12 @@
     <h1 id="gold-price">今日金价：加载中...</h1>
     <div id="current-date">日期：加载中...</div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         // API配置
-        const API_URL = "https://v3.alapi.cn/api/gold";
-        const TOKEN = "vtilq5ptzyhmputx1srvrdqowgvbe7"; // 请替换为您的实际token
+        const API_URL = "https://v3.alapi.cn/api/gold"; // 请替换为您的实际API链接
+        const TOKEN = "vtilq5ptzyhmputx1srvrdqowgvbe7";
+        const MARKET = "LF"; // LF: 实时黄金价格
         
         // 模拟数据 - 用于测试
         const mockData = {
@@ -77,26 +79,43 @@
         }
         
         // 获取真实价格
-        async function fetchRealPrice() {
-            try {
-                // 调用API
-                const response = await fetch(`${API_URL}?token=${TOKEN}`);
-                const data = await response.json();
-                
-                if (data && data.success) {
-                    updatePriceDisplay(data);
-                    return true;
-                } else {
-                    throw new Error(data.message || 'API返回数据异常');
-                }
-            } catch (error) {
-                console.error('获取真实价格失败:', error);
-                return false;
-            }
+        function fetchRealPrice() {
+            return new Promise((resolve) => {
+                const settings = {
+                    async: true,
+                    crossDomain: true,
+                    url: API_URL,
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    processData: false,
+                    data: JSON.stringify({
+                        "token": TOKEN,
+                        "market": MARKET
+                    })
+                };
+
+                $.ajax(settings).done(function (response) {
+                    console.log("API响应:", response);
+                    
+                    if (response && response.success) {
+                        updatePriceDisplay(response);
+                        resolve(true);
+                    } else {
+                        console.error("API返回错误:", response);
+                        resolve(false);
+                    }
+                }).fail(function (xhr, status, error) {
+                    console.error("API请求失败:", error);
+                    resolve(false);
+                });
+            });
         }
         
         // 使用模拟数据
         function useMockData() {
+            console.log("使用模拟数据");
             updatePriceDisplay(mockData);
         }
         
@@ -117,7 +136,7 @@
         }
         
         // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', init);
+        $(document).ready(init);
     </script>
 </body>
 </html>
