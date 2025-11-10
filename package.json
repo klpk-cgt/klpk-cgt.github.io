@@ -13,9 +13,9 @@
 }
 
 {
-  "name": "video-fetcher",
+  "name": "video-player",
   "version": "1.0.0",
-  "description": "获取随机视频并生成播放页面",
+  "description": "无TOKEN视频API播放器",
   "main": "video-fetcher.js",
   "scripts": {
     "fetch": "node video-fetcher.js",
