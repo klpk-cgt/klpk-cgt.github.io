@@ -104,7 +104,7 @@ class NewsAPI {
         return result;
     }
 
-    async saveToFile(content, filename = 'top3-news.txt') {
+    async saveToFile(content, filename = 'news.txt') {
         try {
             fs.writeFileSync(filename, content, 'utf8');
             console.log(`✅ 新闻已保存到: ${filename}`);
