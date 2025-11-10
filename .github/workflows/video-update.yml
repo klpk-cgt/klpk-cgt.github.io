@@ -1,5 +1,4 @@
-# .github/workflows/video-update.yml
-name: 视频更新
+name: 每日视频更新
 
 on:
   schedule:
