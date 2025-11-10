@@ -1,5 +1,4 @@
 const fs = require('fs');
-const path = require('path');
 
 function generateVideoPage() {
     const now = new Date();
@@ -10,15 +9,15 @@ function generateVideoPage() {
     
     // 读取视频信息
     let videoInfo = '视频信息：数据获取中...';
-    let videoFilename = null;
+    let videoUrl = '';
     
     try {
         if (fs.existsSync('video-info.txt')) {
             videoInfo = fs.readFileSync('video-info.txt', 'utf8');
         }
         
-        if (fs.existsSync('video-filename.txt')) {
-            videoFilename = fs.readFileSync('video-filename.txt', 'utf8').trim();
+        if (fs.existsSync('video-url.txt')) {
+            videoUrl = fs.readFileSync('video-url.txt', 'utf8').trim();
         }
     } catch (error) {
         console.error('读取视频文件信息失败:', error);
@@ -158,9 +157,9 @@ function generateVideoPage() {
         
         <div class="video-container">
             <div class="video-player">
-                ${videoFilename ? 
+                ${videoUrl ? 
                     `<video controls autoplay muted>
-                        <source src="${videoFilename}" type="video/mp4">
+                        <source src="${videoUrl}" type="video/mp4">
                         您的浏览器不支持视频播放
                     </video>` : 
                     '<div style="padding: 50px; text-align: center; color: #666;">暂无视频文件</div>'
@@ -174,7 +173,7 @@ function generateVideoPage() {
             <div class="controls">
                 <button class="btn" onclick="location.reload()">刷新页面</button>
                 <a href="video-info.txt" class="btn" download>下载信息文件</a>
-                ${videoFilename ? `<a href="${videoFilename}" class="btn" download>下载视频文件</a>` : ''}
+                ${videoUrl ? `<a href="${videoUrl}" class="btn" download>下载视频文件</a>` : ''}
             </div>
         </div>
     </div>
@@ -186,13 +185,8 @@ function generateVideoPage() {
 </html>`;
     
     // 写入HTML文件
-    fs.writeFileSync('video-player.html', htmlContent, 'utf8');
-    console.log('视频播放页面已生成: video-player.html');
-    
-    // 生成简单的文本汇总（可选）
-    const summaryContent = `随机视频汇总\n${dateString}\n\n${videoInfo}\n\n生成时间: ${now.toLocaleString('zh-CN')}`;
-    fs.writeFileSync('video-summary.txt', summaryContent, 'utf8');
-    console.log('视频汇总文件已生成: video-summary.txt');
+    fs.writeFileSync('index.html', htmlContent, 'utf8');
+    console.log('视频播放页面已生成: index.html');
 }
 
 // 如果直接运行此文件
