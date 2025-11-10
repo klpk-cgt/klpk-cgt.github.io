@@ -3,69 +3,46 @@ const fs = require('fs');
 
 async function getVideoData() {
     try {
-        const token = process.env.VIDEO_API_TOKEN || '您的视频API token';
+        // 直接使用您的API接口，无需TOKEN
+        const apiUrl = 'https://cn.apihz.cn/api/fun/girl.php?id=10009714&key=dad93199ae1931cb95113604767f4618'; // 请替换为您的实际API地址
         
-        // 调用视频API获取随机视频
-        const response = await axios.post('https://cn.apihz.cn/api/fun/girl.php?id=10009714&key=dad93199ae1931cb95113604767f4618', {
-            token: token,
-            type: 'mp4' // 指定获取MP4格式视频
+        console.log('正在调用视频API...');
+        const response = await axios.get(apiUrl, {
+            timeout: 10000,
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
         });
         
-        if (response.data && response.data.success) {
-            const videoData = response.data.data;
+        console.log('API响应状态:', response.status);
+        
+        if (response.data) {
+            // 根据您的API返回格式调整这里
+            // 假设API返回 { title: string, url: string, duration: string, size: string }
+            const videoData = response.data;
             
-            // 返回视频信息
             return {
                 title: videoData.title || '随机视频',
                 url: videoData.url,
                 duration: videoData.duration || '未知',
                 size: videoData.size || '未知',
-                source: videoData.source || 'API生成'
+                source: videoData.source || 'API'
             };
         }
-        return {
-            title: '视频数据获取失败',
-            url: '',
-            duration: '未知',
-            size: '未知',
-            source: 'API错误'
-        };
-    } catch (error) {
-        console.error('获取视频数据失败:', error);
-        return {
-            title: '视频数据获取失败',
-            url: '',
-            duration: '未知',
-            size: '未知',
-            source: '网络错误'
-        };
-    }
-}
-
-async function downloadVideo(videoUrl, outputPath) {
-    try {
-        if (!videoUrl) {
-            throw new Error('视频URL为空');
-        }
         
-        const response = await axios({
-            method: 'GET',
-            url: videoUrl,
-            responseType: 'stream',
-            timeout: 30000
-        });
-        
-        const writer = fs.createWriteStream(outputPath);
-        response.data.pipe(writer);
-        
-        return new Promise((resolve, reject) => {
-            writer.on('finish', resolve);
-            writer.on('error', reject);
-        });
+        throw new Error('API返回数据为空');
         
     } catch (error) {
-        console.error('下载视频失败:', error);
-        throw error;
+        console.error('获取视频数据失败:', error.message);
+        
+        // 使用备用数据
+        return {
+            title: `备用视频 - ${new Date().toLocaleString('zh-CN')}`,
+            url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            duration: "10:53",
+            size: "28.5 MB",
+            source: "Google示例视频库"
+        };
     }
 }
 
@@ -81,18 +58,10 @@ async function main() {
         fs.writeFileSync('video-info.txt', infoContent, 'utf8');
         console.log('视频信息已保存到 video-info.txt');
         
-        // 如果有视频URL，尝试下载视频
+        // 保存视频URL到单独文件
         if (videoInfo.url) {
-            try {
-                const outputFilename = `video-${Date.now()}.mp4`;
-                await downloadVideo(videoInfo.url, outputFilename);
-                console.log(`视频已下载: ${outputFilename}`);
-                
-                // 记录下载的视频文件名
-                fs.writeFileSync('video-filename.txt', outputFilename, 'utf8');
-            } catch (downloadError) {
-                console.log('视频下载失败，仅保存信息文件');
-            }
+            fs.writeFileSync('video-url.txt', videoInfo.url, 'utf8');
+            console.log('视频URL已保存到 video-url.txt');
         }
         
     } catch (error) {
@@ -106,6 +75,5 @@ if (require.main === module) {
 }
 
 module.exports = {
-    getVideoData,
-    downloadVideo
+    getVideoData
 };
