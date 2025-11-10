@@ -11,3 +11,21 @@
     "cheerio": "^1.0.0-rc.12"
   }
 }
+
+{
+  "name": "video-fetcher",
+  "version": "1.0.0",
+  "description": "获取随机视频并生成播放页面",
+  "main": "video-fetcher.js",
+  "scripts": {
+    "fetch": "node video-fetcher.js",
+    "generate": "node generate-video-page.js",
+    "all": "npm run fetch && npm run generate"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "keywords": ["video", "api", "mp4", "player"],
+  "author": "Your Name",
+  "license": "MIT"
+}
