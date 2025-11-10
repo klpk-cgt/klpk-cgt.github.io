@@ -1,31 +1,31 @@
 {
   "name": "daily-info-tracker",
   "version": "1.0.0",
-  "description": "自动获取每日信息（金价、虚拟货币、新闻等）",
+  "description": "自动获取每日信息（金价、虚拟货币、新闻、视频等）",
   "main": "index.js",
   "scripts": {
-    "update": "node scripts/generate-summary.js"
+    "gold": "node scripts/gold-price.js",
+    "video-fetch": "node scripts/video-fetcher.js",
+    "video-generate": "node scripts/generate-video-page.js",
+    "summary": "node scripts/generate-summary.js",
+    "all-gold": "npm run gold && npm run summary",
+    "all-video": "npm run video-fetch && npm run video-generate",
+    "all": "npm run gold && npm run video-fetch && npm run video-generate && npm run summary",
+    "update": "npm run all"
   },
   "dependencies": {
-    "axios": "^1.4.0",
+    "axios": "^1.6.0",
     "cheerio": "^1.0.0-rc.12"
-  }
-}
-
-{
-  "name": "video-player",
-  "version": "1.0.0",
-  "description": "无TOKEN视频API播放器",
-  "main": "video-fetcher.js",
-  "scripts": {
-    "fetch": "node video-fetcher.js",
-    "generate": "node generate-video-page.js",
-    "all": "npm run fetch && npm run generate"
   },
-  "dependencies": {
-    "axios": "^1.6.0"
-  },
-  "keywords": ["video", "api", "mp4", "player"],
+  "keywords": [
+    "gold",
+    "video",
+    "api",
+    "mp4",
+    "tracker",
+    "daily",
+    "info"
+  ],
   "author": "Your Name",
   "license": "MIT"
 }
