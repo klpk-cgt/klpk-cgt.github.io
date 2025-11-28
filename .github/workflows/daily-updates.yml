@@ -2,7 +2,7 @@ name: 每日信息更新
 
 on:
   schedule:
-    - cron: '0 9 * * *'  # 每天UTC时间9:00（北京时间17:00）
+    - cron: '0 22 * * *'  # 每天UTC时间22:00（北京时间次日6:00）
   workflow_dispatch:  # 允许手动触发
 
 jobs:
